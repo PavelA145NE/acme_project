@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView
 from django.urls import reverse_lazy
 
 from .forms import BirthdayForm
@@ -85,7 +85,7 @@ def birthday(request, pk=None):
             form.cleaned_data['birthday']
         )
         context.update({'birthday_countdown': birthday_countdown})
-    return render(request, 'birthday/birthday.html', context) 
+    return render(request, 'birthday/birthday.html', context)
 
 def delete_birthday(request, pk):
     # Получаем объект модели или выбрасываем 404 ошибку.
@@ -134,4 +134,11 @@ class BirthdayListView(ListView):
     # ...сортировку, которая будет применена при выводе списка объектов:
     ordering = 'id'
     # ...и даже настройки пагинации:
-    paginate_by = 10 
+    paginate_by = 10
+
+
+class BirthdayUpdateView(UpdateView):
+    model = Birthday
+    form_class = BirthdayForm
+    template_name = 'birthday/birthday.html'
+    success_url = reverse_lazy('birthday:list')
